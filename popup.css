@@ -1,0 +1,339 @@
+/* Second Thought - Modern UI Styles */
+
+/* Emoji Popup */
+.second-thought-popup {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+  border-radius: 50px;
+  padding: 16px 32px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  pointer-events: auto;
+  animation: popupSlideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+  min-width: 240px;
+  justify-content: space-between;
+}
+
+.second-thought-popup:hover {
+  transform: translateX(-50%) translateY(4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, #222 0%, #0a0a0a 100%);
+}
+
+.second-thought-popup.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-200%);
+  pointer-events: none;
+}
+
+.second-thought-emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.second-thought-label {
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.second-thought-menu-dots {
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.second-thought-menu-dots span {
+  width: 4px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+}
+
+.second-thought-menu-dots:hover span {
+  background-color: white;
+}
+
+@keyframes popupSlideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Modal Overlay */
+.second-thought-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.3s ease-out;
+  padding: 20px;
+}
+
+.second-thought-modal-overlay.hidden {
+  display: none;
+}
+
+.second-thought-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 0;
+  max-width: 500px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.second-thought-modal-header {
+  background: white;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.second-thought-modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.second-thought-modal-emoji {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.second-thought-modal-close {
+  background: transparent;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #999;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.second-thought-modal-close:hover {
+  background: #f5f5f5;
+  color: black;
+  transform: none;
+}
+
+.second-thought-modal-body {
+  padding: 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.second-thought-modal-section {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.second-thought-modal-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.second-thought-modal-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.second-thought-modal-section-title::before {
+  content: '';
+  width: 4px;
+  height: 14px;
+  background: black;
+  border-radius: 2px;
+}
+
+.second-thought-modal-section-content {
+  font-size: 15px;
+  color: #1f2937;
+  line-height: 1.7;
+}
+
+.second-thought-modal-emotion {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #f9f9f9;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  border: 1px solid #eee;
+}
+
+.second-thought-modal-tone {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #f0f0f0;
+  color: #333;
+}
+
+.second-thought-modal-tone.positive {
+  background: #efffef;
+  color: #1a4d1a;
+  border: 1px solid #d0e6d0;
+}
+
+.second-thought-modal-tone.negative {
+  background: #fff0f0;
+  color: #4d1a1a;
+  border: 1px solid #e6d0d0;
+}
+
+.second-thought-modal-tone.neutral {
+  background: #f5f5f5;
+  color: #444;
+  border: 1px solid #e0e0e0;
+}
+
+.second-thought-message-box {
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 3px solid #333;
+  font-style: italic;
+  color: #444;
+  font-size: 14px;
+}
+
+.second-thought-suggestion-box {
+  background: #f5fbf7;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 3px solid #10b981;
+  color: #0d5f43;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Scrollbar styling for modal */
+.second-thought-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.second-thought-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.second-thought-modal-body::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.second-thought-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* Ambient Glow Animation */
+@keyframes ambientPulse {
+  0% {
+    box-shadow: inset 0 0 0 0 rgba(102, 126, 234, 0);
+    opacity: 0;
+  }
+
+  20% {
+    box-shadow: inset 0 0 50px 10px rgba(102, 126, 234, 0.5);
+    opacity: 1;
+  }
+
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(102, 126, 234, 0);
+    opacity: 0;
+  }
+}
+
+.second-thought-ambient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999998;
+  /* Below popup but above everything else */
+  animation: ambientPulse 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  /* Add a gradient border effect */
+  background: transparent;
+}

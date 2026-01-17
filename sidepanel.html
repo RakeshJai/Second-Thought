@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Second Thought - AI Chat Analyzer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 32px 24px;
+      color: white;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .content {
+      padding: 32px 24px;
+    }
+
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 2px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.3s;
+      background: #f9fafb;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    .status-badge.success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+    }
+
+    .status-badge.info {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      color: #1e40af;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-left: 4px solid #667eea;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+
+    .info-box p {
+      font-size: 13px;
+      color: #1e40af;
+      line-height: 1.6;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+      margin: 32px 0;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 16px;
+    }
+
+    .feature-list li {
+      padding: 12px 0;
+      font-size: 14px;
+      color: #4b5563;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-list li::before {
+      content: '✨';
+      font-size: 18px;
+    }
+
+    .error-box {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border-left: 4px solid #ef4444;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+
+    .error-box p {
+      font-size: 14px;
+      color: #991b1b;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🧠 Second Thought</h1>
+      <p>AI-Powered Chat Emotion Analyzer</p>
+    </div>
+
+    <div class="content">
+      <!-- Settings Section -->
+      <div class="section">
+        <h2 class="section-title">Settings</h2>
+        <div class="input-group">
+          <label for="apiKey" class="input-label">Gemini API Key (Optional)</label>
+          <input 
+            type="password" 
+            id="apiKey" 
+            class="input-field" 
+            placeholder="API key is pre-configured"
+          >
+        </div>
+        
+        <div class="input-group">
+          <label for="modelSelect" class="input-label">AI Model</label>
+          <select id="modelSelect" class="input-field">
+            <option value="mistralai/devstral-2512:free">Mistral 7B (Free)</option>
+            <option value="google/gemini-flash-1.5">Gemini Flash 1.5</option>
+            <option value="meta-llama/llama-3-8b-instruct:free">Llama 3 8B (Free)</option>
+            <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
+          </select>
+        </div>
+        <button id="saveApiKey" class="btn btn-primary">
+          <span>💾</span>
+          <span>Save Custom API Key</span>
+        </button>
+        <div id="apiKeyStatus" class="hidden"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- About Section -->
+      <div class="section">
+        <h2 class="section-title">How It Works</h2>
+        <ul class="feature-list">
+          <li>Analyzes your messages before sending</li>
+          <li>Shows emotion emoji based on recipient's likely reaction</li>
+          <li>Plays a sound when significant emotions are detected</li>
+          <li>Click the emoji to see detailed analysis</li>
+          <li>Automatically filters trivial messages like "brb" or "ok"</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Status Section -->
+      <div class="section">
+        <h2 class="section-title">Status</h2>
+        <div class="info-box">
+          <p>
+            <strong>✅ Extension Active</strong><br>
+            The extension is running and will analyze your messages on WhatsApp Web and Discord. 
+            Just start typing a message to see the emotion analysis!
+          </p>
+        </div>
+      </div>
+
+      <!-- Error Section -->
+      <div id="errorSection" class="hidden">
+        <div class="error-box">
+          <p id="errorMessage"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
