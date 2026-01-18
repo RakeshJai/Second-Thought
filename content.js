@@ -216,85 +216,31 @@
     };
   }
 
-  // Apply suggestion to chat input
-  function applySuggestion(text) {
-    if (!text || isApplyingSuggestion) return;
-
-    let inputEl = null;
-    if (platform === "WHATSAPP") {
-      inputEl = findWhatsAppInput();
-    } else if (platform === "DISCORD") {
-      inputEl = findDiscordInput();
-    }
-
-    if (!inputEl) {
-      console.error("Echo: Could not find input element to apply suggestion");
-      return;
-    }
+  // Copy suggestion to clipboard
+  async function copySuggestion(text) {
+    if (!text) return;
 
     try {
-      isApplyingSuggestion = true;
-      console.log("Echo: Applying suggestion with Slate-compatible method...");
+      await navigator.clipboard.writeText(text);
+      console.log("Echo: Suggestion copied to clipboard");
 
-      // 1. Focus the input
-      inputEl.focus();
-
-      // 2. Select everything the DOM way (more reliable for React/Slate)
-      const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(inputEl);
-      selection.removeAllRanges();
-      selection.addRange(range);
-
-      // 3. Clear existing text via standard execCommand
-      document.execCommand('delete', false, null);
-
-      // 4. Prepare 'beforeinput' event (This is what Slate/Discord listens for)
-      const dataTransfer = new DataTransfer();
-      dataTransfer.setData('text/plain', text);
-      const beforeInputEvent = new InputEvent('beforeinput', {
-        inputType: 'insertFromPaste',
-        dataTransfer: dataTransfer,
-        bubbles: true,
-        cancelable: true,
-      });
-
-      // 5. Dispatch and then insert
-      if (inputEl.dispatchEvent(beforeInputEvent)) {
-        document.execCommand('insertText', false, text);
-      }
-
-      // 6. Update internal state immediately to prevent re-triggering
-      currentDraft = text;
-
-      // 7. Dispatch final events so the site knows we're done
-      inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-      inputEl.dispatchEvent(new Event('change', { bubbles: true }));
-
-      // 8. Move cursor to end of the new text
-      const finalRange = document.createRange();
-      finalRange.selectNodeContents(inputEl);
-      finalRange.collapse(false); // true for start, false for end
-      selection.removeAllRanges();
-      selection.addRange(finalRange);
-
-      // 9. UI Cleanup
+      // UI Cleanup
       if (modalElement) modalElement.classList.add("hidden");
       hidePopup();
-      showPopup("✅", "Applied!", true);
 
-      // 10. Unlock after a short delay to allow DOM to settle
+      // Show confirmation popup
+      showPopup("📋", "Copied to Clipboard!", true);
+
+      // Brief delay to prevent immediate re-analysis if they paste quickly
+      isApplyingSuggestion = true;
       setTimeout(() => {
         isApplyingSuggestion = false;
-        currentDraft = extractDraft();
-        console.log("Echo: Suggestion applied and editor unlocked.");
-      }, 500);
+        currentDraft = text; // Match internal state to the suggestion
+      }, 2000);
 
     } catch (error) {
-      console.error("Echo: Error applying suggestion", error);
-      isApplyingSuggestion = false;
-      // Last resort fallback
-      inputEl.innerText = text;
+      console.error("Echo: Error copying suggestion", error);
+      showPopup("❌", "Copy failed");
     }
   }
 
@@ -383,8 +329,8 @@
             <div class="echo-message-box" id="modal-draft">No message</div>
           </div>
           <div class="echo-modal-section" id="modal-improved-section" style="display: none;">
-            <div class="echo-modal-section-title">Suggestion (Click to use)</div>
-            <div class="echo-suggestion-box" id="modal-improved" title="Click to apply this suggestion to your chat">No suggestion</div>
+            <div class="echo-modal-section-title">Suggestion (Click to copy)</div>
+            <div class="echo-suggestion-box" id="modal-improved" title="Click to copy this suggestion to your clipboard">No suggestion</div>
           </div>
         </div>
       </div>
@@ -396,7 +342,7 @@
       improvedBox.addEventListener("click", () => {
         const text = improvedBox.textContent;
         if (text && text !== "No suggestion") {
-          applySuggestion(text);
+          copySuggestion(text);
         }
       });
     }
