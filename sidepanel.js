@@ -59,10 +59,10 @@ async function loadSettings() {
     // API Key State
     if (result.gemini_api_key) {
       console.log("Second Thought: Found existing API key");
-      ELEMENTS.apiKeyInput.placeholder = "Custom API key is set";
-      showStatus("Custom settings loaded.", "success");
+      ELEMENTS.apiKeyInput.placeholder = "Custom Key Active";
+      showStatus("Neural config synchronized.", "success");
     } else {
-      showStatus("Using pre-configured API key.", "info");
+      showStatus("Using standard model access.", "info");
     }
 
     // Model Selection State
@@ -84,7 +84,7 @@ async function saveSettings() {
   const selectedModel = modelSelect ? modelSelect.value : "mistralai/devstral-2512:free";
 
   ELEMENTS.saveApiKeyBtn.disabled = true;
-  ELEMENTS.saveApiKeyBtn.innerHTML = '<span>⏳</span><span>Saving...</span>';
+  ELEMENTS.saveApiKeyBtn.innerHTML = '<span>⏳</span><span>Synchronizing...</span>';
 
   try {
     // 1. Save API Key if entered
@@ -100,15 +100,15 @@ async function saveSettings() {
     // 2. Save Model Selection
     await chrome.storage.local.set({ "selected_model": selectedModel });
 
-    showStatus("✅ Settings saved successfully!", "success");
+    showStatus("✅ Neural network configured!", "success");
     hideError();
 
   } catch (error) {
     console.error("Second Thought: Error saving settings", error);
-    showError(`Error saving settings: ${error.message}`);
+    showError(`Sync Failed: ${error.message}`);
   } finally {
     ELEMENTS.saveApiKeyBtn.disabled = false;
-    ELEMENTS.saveApiKeyBtn.innerHTML = '<span>💾</span><span>Save Settings</span>';
+    ELEMENTS.saveApiKeyBtn.innerHTML = '<span>💾</span><span>Apply Changes</span>';
   }
 }
 

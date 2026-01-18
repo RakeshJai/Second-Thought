@@ -14,8 +14,8 @@
       CONTEXT_LIMIT: 10
     },
     DISCORD: {
-      DRAFT_SELECTOR: '[role="textbox"]',
-      MESSAGE_SELECTOR: '[class*="messageContent"]',
+      DRAFT_SELECTOR: '[class*="slateTextArea-"][role="textbox"]',
+      MESSAGE_SELECTOR: '[id^="message-content-"], [class*="messageContent-"]',
       CONTEXT_LIMIT: 10
     },
     DEBOUNCE_TIME: 1000 // ms
@@ -110,14 +110,15 @@
         if (platform === "DISCORD") {
           const messageRow = el.closest('[class*="message-"]');
           if (messageRow) {
-            // Find the author display name
+            // Find the author element
+            // Discord uses [class*="username-"] for the actual name
             let authorEl = messageRow.querySelector('[class*="username-"]');
 
             // If no author element (grouped message), look up previous siblings
             if (!authorEl) {
               let prev = messageRow.previousElementSibling;
               let depth = 0;
-              while (prev && !authorEl && depth < 20) { // Safety limit
+              while (prev && !authorEl && depth < 30) { // Increased depth for busy chats
                 authorEl = prev.querySelector('[class*="username-"]');
                 prev = prev.previousElementSibling;
                 depth++;
@@ -127,19 +128,23 @@
             if (authorEl) {
               const authorName = authorEl.textContent.trim();
 
-              // Get current user's name from account panel (bottom left)
-              // This is a common selector but can vary; we check multiple
+              // Get current user's name (Me)
+              // Discord stores this in multiple places, try to find the most reliable one
               const meEl = document.querySelector('[class*="nameTag-"] [class*="username-"]') ||
                 document.querySelector('[class*="accountProfileCard-"] [class*="username-"]') ||
-                document.querySelector('[class*="panel-"] [class*="text-"]');
+                document.querySelector('[class*="panel-"] [class*="text-"] div') ||
+                document.querySelector('[class*="container-"] [class*="avatar-"] + div [class*="username-"]');
 
               const meName = meEl?.textContent.trim();
 
-              // If we can't find 'Me', we just use the name but this is the goal
+              // If we find a match, it's Me
               const isMe = (meName && authorName === meName);
               const senderTag = isMe ? "[Me]" : "[Them]";
 
               return `${senderTag} (${authorName}): ${text}`;
+            } else {
+              // Fallback if no author found after searching siblings
+              return `[Them]: ${text}`;
             }
           }
         }

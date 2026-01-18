@@ -11,6 +11,8 @@
   "host_permissions": [
     "https://web.whatsapp.com/*",
     "https://discord.com/*",
+    "https://canary.discord.com/*",
+    "https://ptb.discord.com/*",
     "https://openrouter.ai/*"
   ],
   "background": {
@@ -21,7 +23,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://web.whatsapp.com/*", "https://discord.com/*"],
+      "matches": [
+        "https://web.whatsapp.com/*", 
+        "https://discord.com/*",
+        "https://canary.discord.com/*",
+        "https://ptb.discord.com/*"
+      ],
       "js": ["content.js"],
       "css": ["popup.css"]
     }
