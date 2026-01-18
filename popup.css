@@ -1,7 +1,7 @@
-/* Second Thought - Modern UI Styles */
+/* Echo - Modern UI Styles */
 
 /* Emoji Popup */
-.second-thought-popup {
+.echo-popup {
   position: fixed;
   top: 30px;
   left: 50%;
@@ -25,31 +25,31 @@
   justify-content: space-between;
 }
 
-.second-thought-popup:hover {
+.echo-popup:hover {
   transform: translateX(-50%) translateY(4px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   background: linear-gradient(180deg, #222 0%, #0a0a0a 100%);
 }
 
-.second-thought-popup.hidden {
+.echo-popup.hidden {
   opacity: 0;
   transform: translateX(-50%) translateY(-200%);
   pointer-events: none;
 }
 
-.second-thought-emoji {
+.echo-emoji {
   font-size: 28px;
   line-height: 1;
 }
 
-.second-thought-label {
+.echo-label {
   font-size: 16px;
   color: white;
   font-weight: 600;
   letter-spacing: -0.3px;
 }
 
-.second-thought-menu-dots {
+.echo-menu-dots {
   display: flex;
   gap: 3px;
   padding: 4px;
@@ -57,14 +57,14 @@
   transition: background 0.2s;
 }
 
-.second-thought-menu-dots span {
+.echo-menu-dots span {
   width: 4px;
   height: 4px;
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 50%;
 }
 
-.second-thought-menu-dots:hover span {
+.echo-menu-dots:hover span {
   background-color: white;
 }
 
@@ -81,7 +81,7 @@
 }
 
 /* Modal Overlay */
-.second-thought-modal-overlay {
+.echo-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -97,11 +97,11 @@
   padding: 20px;
 }
 
-.second-thought-modal-overlay.hidden {
+.echo-modal-overlay.hidden {
   display: none;
 }
 
-.second-thought-modal {
+.echo-modal {
   background: white;
   border-radius: 20px;
   padding: 0;
@@ -138,7 +138,7 @@
   }
 }
 
-.second-thought-modal-header {
+.echo-modal-header {
   background: white;
   padding: 24px 32px;
   display: flex;
@@ -148,7 +148,7 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.second-thought-modal-title {
+.echo-modal-title {
   font-size: 22px;
   font-weight: 700;
   display: flex;
@@ -157,12 +157,12 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.second-thought-modal-emoji {
+.echo-modal-emoji {
   font-size: 32px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-.second-thought-modal-close {
+.echo-modal-close {
   background: transparent;
   border: none;
   width: 32px;
@@ -178,31 +178,31 @@
   line-height: 1;
 }
 
-.second-thought-modal-close:hover {
+.echo-modal-close:hover {
   background: #f5f5f5;
   color: black;
   transform: none;
 }
 
-.second-thought-modal-body {
+.echo-modal-body {
   padding: 28px;
   overflow-y: auto;
   flex: 1;
 }
 
-.second-thought-modal-section {
+.echo-modal-section {
   margin-bottom: 24px;
   padding-bottom: 24px;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.second-thought-modal-section:last-child {
+.echo-modal-section:last-child {
   border-bottom: none;
   margin-bottom: 0;
   padding-bottom: 0;
 }
 
-.second-thought-modal-section-title {
+.echo-modal-section-title {
   font-size: 12px;
   font-weight: 700;
   color: #6b7280;
@@ -214,7 +214,7 @@
   gap: 8px;
 }
 
-.second-thought-modal-section-title::before {
+.echo-modal-section-title::before {
   content: '';
   width: 4px;
   height: 14px;
@@ -222,13 +222,13 @@
   border-radius: 2px;
 }
 
-.second-thought-modal-section-content {
+.echo-modal-section-content {
   font-size: 15px;
   color: #1f2937;
   line-height: 1.7;
 }
 
-.second-thought-modal-emotion {
+.echo-modal-emotion {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -240,7 +240,7 @@
   border: 1px solid #eee;
 }
 
-.second-thought-modal-tone {
+.echo-modal-tone {
   display: inline-block;
   padding: 6px 12px;
   border-radius: 6px;
@@ -250,25 +250,25 @@
   color: #333;
 }
 
-.second-thought-modal-tone.positive {
+.echo-modal-tone.positive {
   background: #efffef;
   color: #1a4d1a;
   border: 1px solid #d0e6d0;
 }
 
-.second-thought-modal-tone.negative {
+.echo-modal-tone.negative {
   background: #fff0f0;
   color: #4d1a1a;
   border: 1px solid #e6d0d0;
 }
 
-.second-thought-modal-tone.neutral {
+.echo-modal-tone.neutral {
   background: #f5f5f5;
   color: #444;
   border: 1px solid #e0e0e0;
 }
 
-.second-thought-message-box {
+.echo-message-box {
   background: #f9f9f9;
   padding: 16px;
   border-radius: 8px;
@@ -278,7 +278,7 @@
   font-size: 14px;
 }
 
-.second-thought-suggestion-box {
+.echo-suggestion-box {
   background: #f5fbf7;
   padding: 16px;
   border-radius: 8px;
@@ -289,20 +289,20 @@
 }
 
 /* Scrollbar styling for modal */
-.second-thought-modal-body::-webkit-scrollbar {
+.echo-modal-body::-webkit-scrollbar {
   width: 6px;
 }
 
-.second-thought-modal-body::-webkit-scrollbar-track {
+.echo-modal-body::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.second-thought-modal-body::-webkit-scrollbar-thumb {
+.echo-modal-body::-webkit-scrollbar-thumb {
   background: #ddd;
   border-radius: 3px;
 }
 
-.second-thought-modal-body::-webkit-scrollbar-thumb:hover {
+.echo-modal-body::-webkit-scrollbar-thumb:hover {
   background: #ccc;
 }
 
@@ -324,7 +324,7 @@
   }
 }
 
-.second-thought-ambient-glow {
+.echo-ambient-glow {
   position: fixed;
   top: 0;
   left: 0;

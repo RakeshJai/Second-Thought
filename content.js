@@ -40,7 +40,7 @@
   }
 
   const platform = detectPlatform();
-  console.log(`Second Thought: Platform detected - ${platform || "unsupported"}`);
+  console.log(`Echo: Platform detected - ${platform || "unsupported"}`);
 
   // Get configuration for current platform
   function getConfig() {
@@ -225,11 +225,11 @@
     }
 
     const popup = document.createElement("div");
-    popup.className = "second-thought-popup hidden";
+    popup.className = "echo-popup hidden";
     popup.innerHTML = `
-      <span class="second-thought-emoji">😐</span>
-      <span class="second-thought-label">Analyzing...</span>
-      <div class="second-thought-menu-dots">
+      <span class="echo-emoji">😐</span>
+      <span class="echo-label">Analyzing...</span>
+      <div class="echo-menu-dots">
         <span></span><span></span><span></span>
       </div>
     `;
@@ -259,54 +259,54 @@
     }
 
     const overlay = document.createElement("div");
-    overlay.className = "second-thought-modal-overlay hidden";
+    overlay.className = "echo-modal-overlay hidden";
     overlay.innerHTML = `
-      <div class="second-thought-modal">
-        <div class="second-thought-modal-header">
-          <div class="second-thought-modal-title">
-            <span class="second-thought-modal-emoji">😐</span>
+      <div class="echo-modal">
+        <div class="echo-modal-header">
+          <div class="echo-modal-title">
+            <span class="echo-modal-emoji">😐</span>
             <span>Message Analysis</span>
           </div>
-          <button class="second-thought-modal-close" aria-label="Close">×</button>
+          <button class="echo-modal-close" aria-label="Close">×</button>
         </div>
-        <div class="second-thought-modal-body">
-          <div class="second-thought-modal-section">
-            <div class="second-thought-modal-section-title">Emotion</div>
-            <div class="second-thought-modal-section-content">
-              <span class="second-thought-modal-emotion">
-                <span class="second-thought-modal-emoji">😐</span>
+        <div class="echo-modal-body">
+          <div class="echo-modal-section">
+            <div class="echo-modal-section-title">Emotion</div>
+            <div class="echo-modal-section-content">
+              <span class="echo-modal-emotion">
+                <span class="echo-modal-emoji">😐</span>
                 <span id="modal-emotion-text">Neutral</span>
               </span>
             </div>
           </div>
-          <div class="second-thought-modal-section">
-            <div class="second-thought-modal-section-title">Tone</div>
-            <div class="second-thought-modal-section-content">
-              <span class="second-thought-modal-tone" id="modal-tone">Neutral</span>
+          <div class="echo-modal-section">
+            <div class="echo-modal-section-title">Tone</div>
+            <div class="echo-modal-section-content">
+              <span class="echo-modal-tone" id="modal-tone">Neutral</span>
             </div>
           </div>
-          <div class="second-thought-modal-section">
-            <div class="second-thought-modal-section-title">How They'll Feel</div>
-            <div class="second-thought-modal-section-content" id="modal-feeling">Neutral</div>
+          <div class="echo-modal-section">
+            <div class="echo-modal-section-title">How They'll Feel</div>
+            <div class="echo-modal-section-content" id="modal-feeling">Neutral</div>
           </div>
-          <div class="second-thought-modal-section">
-            <div class="second-thought-modal-section-title">Perception Analysis</div>
-            <div class="second-thought-modal-section-content" id="modal-perception">Analyzing...</div>
+          <div class="echo-modal-section">
+            <div class="echo-modal-section-title">Perception Analysis</div>
+            <div class="echo-modal-section-content" id="modal-perception">Analyzing...</div>
           </div>
-          <div class="second-thought-modal-section">
-            <div class="second-thought-modal-section-title">Your Message</div>
-            <div class="second-thought-message-box" id="modal-draft">No message</div>
+          <div class="echo-modal-section">
+            <div class="echo-modal-section-title">Your Message</div>
+            <div class="echo-message-box" id="modal-draft">No message</div>
           </div>
-          <div class="second-thought-modal-section" id="modal-improved-section" style="display: none;">
-            <div class="second-thought-modal-section-title">Suggestion</div>
-            <div class="second-thought-suggestion-box" id="modal-improved">No suggestion</div>
+          <div class="echo-modal-section" id="modal-improved-section" style="display: none;">
+            <div class="echo-modal-section-title">Suggestion</div>
+            <div class="echo-suggestion-box" id="modal-improved">No suggestion</div>
           </div>
         </div>
       </div>
     `;
 
     // Close handlers
-    const closeBtn = overlay.querySelector(".second-thought-modal-close");
+    const closeBtn = overlay.querySelector(".echo-modal-close");
     closeBtn.addEventListener("click", () => {
       overlay.classList.add("hidden");
     });
@@ -336,7 +336,7 @@
     const result = currentAnalysis.result;
 
     // Update modal content
-    const emojiEl = modal.querySelector(".second-thought-modal-emoji");
+    const emojiEl = modal.querySelector(".echo-modal-emoji");
     const emotionText = modal.querySelector("#modal-emotion-text");
     const toneEl = modal.querySelector("#modal-tone");
     const feelingEl = modal.querySelector("#modal-feeling");
@@ -352,7 +352,7 @@
     if (toneEl) {
       toneEl.textContent = result.tone || "neutral";
       // Add tone class
-      toneEl.className = "second-thought-modal-tone";
+      toneEl.className = "echo-modal-tone";
       const lowerTone = (result.tone || "").toLowerCase();
       if (lowerTone.includes("positive") || lowerTone.includes("friendly") || lowerTone.includes("kind")) {
         toneEl.classList.add("positive");
@@ -452,13 +452,13 @@
   // Show ambient glow animation
   function showAmbientGlow() {
     // Remove existing glow if any
-    const existingGlow = document.querySelector('.second-thought-ambient-glow');
+    const existingGlow = document.querySelector('.echo-ambient-glow');
     if (existingGlow) {
       existingGlow.remove();
     }
 
     const glow = document.createElement('div');
-    glow.className = 'second-thought-ambient-glow';
+    glow.className = 'echo-ambient-glow';
     document.body.appendChild(glow);
 
     // Remove after animation completes
@@ -471,16 +471,16 @@
 
   // Position and show popup
   function showPopup(emoji, label, autoHide = true) {
-    console.log("Second Thought: showPopup called with", emoji, label, "autoHide:", autoHide);
+    console.log("Echo: showPopup called with", emoji, label, "autoHide:", autoHide);
     const popup = createPopup();
     // CSS handles positioning now (fixed top center)
     // We just need to update content and visibility
 
-    console.log("Second Thought: Updating popup content", { emoji, label });
+    console.log("Echo: Updating popup content", { emoji, label });
 
     // Update content
-    const emojiEl = popup.querySelector(".second-thought-emoji");
-    const labelEl = popup.querySelector(".second-thought-label");
+    const emojiEl = popup.querySelector(".echo-emoji");
+    const labelEl = popup.querySelector(".echo-label");
 
     if (emojiEl) {
       emojiEl.textContent = emoji || "😐";
@@ -513,7 +513,7 @@
     // Auto-hide only if requested (default for results)
     if (autoHide) {
       popupHideTimeout = setTimeout(() => {
-        console.log("Second Thought: Auto-hiding popup after 8s");
+        console.log("Echo: Auto-hiding popup after 8s");
         hidePopup();
       }, 8000);
     }
@@ -538,26 +538,26 @@
   // Send draft for analysis
   function sendForAnalysis(draft, context) {
     if (!draft || draft.length === 0) {
-      console.log("Second Thought: No draft to analyze");
+      console.log("Echo: No draft to analyze");
       hidePopup();
       return;
     }
 
     // Filter trivial messages
     if (isTrivialMessage(draft)) {
-      console.log("Second Thought: Trivial message detected, skipping analysis:", draft);
+      console.log("Echo: Trivial message detected, skipping analysis:", draft);
       hidePopup();
       return;
     }
 
-    console.log("Second Thought: Sending draft for analysis", { draft: draft.substring(0, 50), contextLength: context.length });
+    console.log("Echo: Sending draft for analysis", { draft: draft.substring(0, 50), contextLength: context.length });
 
     // Show loading popup immediately - DON'T auto-hide while waiting
     showPopup("⏳", "Analyzing...", false);
 
     // Set a timeout to hide popup if no response
     const timeoutId = setTimeout(() => {
-      console.error("Second Thought: Analysis timeout - no response after 15 seconds");
+      console.error("Echo: Analysis timeout - no response after 15 seconds");
       showPopup("❌", "Timeout");
       setTimeout(() => {
         hidePopup();
@@ -669,7 +669,7 @@
 
         // Hide popup if draft is empty
         if (!newDraft || newDraft.length === 0) {
-          console.log("Second Thought: Draft empty, hiding popup");
+          console.log("Echo: Draft empty, hiding popup");
           hidePopup();
           currentAnalysis = null;
           // Ensure we don't think we're still processing
@@ -770,7 +770,7 @@
     const attachInputHandlers = (element) => {
       if (!element || inputHandlerAttached) return;
 
-      console.log("Second Thought: Attaching input handlers to element");
+      console.log("Echo: Attaching input handlers to element");
 
       const handler = () => {
         const draftText = extractDraft();
@@ -785,7 +785,7 @@
 
       // Also watch for focus
       element.addEventListener("focus", () => {
-        console.log("Second Thought: Input element focused");
+        console.log("Echo: Input element focused");
         draftElement = element;
       }, true);
 
@@ -820,7 +820,7 @@
           }
 
           if (draftElement && !inputHandlerAttached) {
-            console.log("Second Thought: Found new draft element");
+            console.log("Echo: Found new draft element");
             attachInputHandlers(draftElement);
             // Reset current draft ensures we re-analyze if needed
             currentDraft = "";
@@ -830,7 +830,7 @@
     });
 
     observer.observe(document.body, config);
-    console.log("Second Thought: MutationObserver set up (Optimized)");
+    console.log("Echo: MutationObserver set up (Optimized)");
 
     // Try to find input element immediately and periodically
     const findAndAttach = () => {
@@ -843,10 +843,10 @@
       }
 
       if (draftElement) {
-        console.log("Second Thought: Found draft element:", draftElement);
+        console.log("Echo: Found draft element:", draftElement);
         attachInputHandlers(draftElement);
       } else {
-        console.log("Second Thought: Draft element not found yet, will retry...");
+        console.log("Echo: Draft element not found yet, will retry...");
         setTimeout(findAndAttach, 1000);
       }
     };
@@ -859,8 +859,8 @@
   }
 
   // Test function - can be called from console
-  window.testSecondThought = function () {
-    console.log("Second Thought: Test function called");
+  window.testEcho = function () {
+    console.log("Echo: Test function called");
     const draft = extractDraft();
     console.log("Current draft:", draft);
     showPopup("😊", "Test Popup");
@@ -871,7 +871,7 @@
 
   // Initialize
   function init() {
-    console.log("Second Thought: Initializing content script");
+    console.log("Echo: Initializing content script");
 
     // Only set up observers if platform is supported
     if (platform) {
@@ -882,7 +882,7 @@
 
       // Test popup visibility
       setTimeout(() => {
-        const testPopup = document.querySelector(".second-thought-popup");
+        const testPopup = document.querySelector(".echo-popup");
         if (testPopup) {
           console.log("Echo: Popup element exists in DOM");
         } else {
