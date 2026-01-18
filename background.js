@@ -67,12 +67,12 @@ async function initializeStorage() {
   try {
     const result = await chrome.storage.local.get([API_CONFIG.API_KEY_STORAGE]);
     if (!result[API_CONFIG.API_KEY_STORAGE]) {
-      console.log("Second Thought: No API key found in storage");
+      console.log("Echo: No API key found in storage");
     } else {
       console.log("Echo: API key loaded from storage");
     }
   } catch (error) {
-    console.error("Second Thought: Error initializing storage", error);
+    console.error("Echo: Error initializing storage", error);
   }
 }
 
@@ -80,10 +80,10 @@ async function initializeStorage() {
 async function saveApiKey(apiKey) {
   try {
     await chrome.storage.local.set({ [API_CONFIG.API_KEY_STORAGE]: apiKey });
-    console.log("Second Thought: API key saved successfully");
+    console.log("Echo: API key saved successfully");
     return { success: true };
   } catch (error) {
-    console.error("Second Thought: Error saving API key", error);
+    console.error("Echo: Error saving API key", error);
     return { success: false, error: error.message };
   }
 }
@@ -94,7 +94,7 @@ async function getApiKey() {
     const result = await chrome.storage.local.get([API_CONFIG.API_KEY_STORAGE]);
     return result[API_CONFIG.API_KEY_STORAGE];
   } catch (error) {
-    console.error("Second Thought: Error getting API key", error);
+    console.error("Echo: Error getting API key", error);
     return null;
   }
 }
@@ -133,16 +133,16 @@ async function analyzeDraft(draft, context) {
   const apiKey = await getApiKey();
 
   if (!apiKey) {
-    console.error("Second Thought: No API key found");
+    console.error("Echo: No API key found. Analysis aborted.");
     return {
       type: MESSAGE_TYPES.ERROR,
       errorType: ERROR_TYPES.NO_API_KEY,
-      message: "API key not found. Please set your API key in settings."
+      message: "API key not found. Please set your API key in the Echo side panel."
     };
   }
 
   if (!draft || draft.trim().length === 0) {
-    console.error("Second Thought: No draft to analyze");
+    console.error("Echo: No draft to analyze");
     return {
       type: MESSAGE_TYPES.ERROR,
       errorType: ERROR_TYPES.NO_DRAFT,
@@ -152,7 +152,7 @@ async function analyzeDraft(draft, context) {
 
   // Filter trivial messages
   if (isTrivialMessage(draft)) {
-    console.log("Second Thought: Trivial message detected, skipping analysis");
+    console.log("Echo: Trivial message detected, skipping analysis");
     return {
       type: MESSAGE_TYPES.ANALYSIS_RESULT,
       result: {
@@ -255,8 +255,8 @@ Remember: Return ONLY valid JSON, no markdown formatting, no code blocks.`
     }
 
     const responseData = await response.json();
-    console.log("Second Thought: API response received");
-    console.log("Second Thought: Response structure:", {
+    console.log("Echo: API response received");
+    console.log("Echo: Response structure:", {
       hasChoices: !!responseData.choices,
       choicesLength: responseData.choices?.length,
       hasMessage: !!responseData.choices?.[0]?.message,
@@ -290,7 +290,7 @@ Remember: Return ONLY valid JSON, no markdown formatting, no code blocks.`
           analysisResult.has_significant_emotion = analysisResult.has_significant_emotion ?? false;
         } else {
           // Fallback if JSON parsing fails
-          console.warn("Second Thought: Could not extract JSON, using fallback");
+          console.warn("Echo: Could not extract JSON, using fallback");
           analysisResult = {
             relationship_score: 50,
             primary_emotion: "neutral",
@@ -306,7 +306,7 @@ Remember: Return ONLY valid JSON, no markdown formatting, no code blocks.`
         throw new Error("No content in API response");
       }
     } catch (parseError) {
-      console.error("Second Thought: Error parsing API response", parseError);
+      console.error("Echo: Error parsing API response", parseError);
       analysisResult = {
         relationship_score: 50,
         primary_emotion: "neutral",
@@ -326,7 +326,7 @@ Remember: Return ONLY valid JSON, no markdown formatting, no code blocks.`
     };
 
   } catch (error) {
-    console.error("Second Thought: Network error", error);
+    console.error("Echo: Network error", error);
 
     let errorMessage = `Network error: ${error.message}`;
     if (error.name === 'AbortError') {
@@ -361,14 +361,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           break;
 
         default:
-          console.error("Second Thought: Unknown action", request.action);
+          console.error("Echo: Unknown action", request.action);
           sendResponse({
             type: MESSAGE_TYPES.ERROR,
             message: "Unknown action"
           });
       }
     } catch (error) {
-      console.error("Second Thought: Error handling message", error);
+      console.error("Echo: Error handling message", error);
       sendResponse({
         type: MESSAGE_TYPES.ERROR,
         message: `Error handling message: ${error.message}`
