@@ -1,13 +1,13 @@
 // sidepanel.js - Modern UI Controller
 
-console.log("Second Thought Side Panel Loaded");
+console.log("Echo Side Panel Loaded");
 
 // DOM Elements - initialized in init
 let ELEMENTS = {};
 
 // Initialize the side panel
 function init() {
-  console.log("Second Thought: Initializing side panel");
+  console.log("Echo: Initializing side panel");
 
   ELEMENTS = {
     apiKeyInput: document.getElementById("apiKey"),
@@ -62,7 +62,7 @@ async function loadSettings() {
 
     // API Key State
     if (result.openrouter_api_key) {
-      console.log("Second Thought: Found existing API key");
+      console.log("Echo: Found existing API key");
       ELEMENTS.apiKeyInput.placeholder = "Custom Key Active";
       showStatus("Neural config synchronized.", "success");
     } else {
@@ -74,7 +74,7 @@ async function loadSettings() {
       ELEMENTS.modelSelect.value = result.selected_model;
     }
   } catch (error) {
-    console.error("Second Thought: Error loading settings", error);
+    console.error("Echo: Error loading settings", error);
   }
 }
 
@@ -105,7 +105,7 @@ async function saveSettings() {
     hideError();
 
   } catch (error) {
-    console.error("Second Thought: Error saving settings", error);
+    console.error("Echo: Error saving settings", error);
     showError(`Sync Failed: ${error.message}`);
   } finally {
     ELEMENTS.saveApiKeyBtn.disabled = false;

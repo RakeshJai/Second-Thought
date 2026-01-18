@@ -372,11 +372,11 @@
     hidePopup();
   }
 
-  // Play ding sound and show ambient glow
+  // Play gong sound and show ambient glow
   function playDingSound() {
     try {
-      console.log("Second Thought: Attempting to play ding sound");
-      // Create a simple ding sound using Web Audio API
+      console.log("Echo: Attempting to play gong sound");
+      // Create a deep, resonant gong sound using Web Audio API
       const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
       const audioContext = new AudioContextCtor();
 
@@ -385,25 +385,62 @@
         audioContext.resume();
       }
 
-      const oscillator = audioContext.createOscillator();
+      // Create multiple oscillators for a richer gong sound
+      const fundamental = audioContext.createOscillator();
+      const harmonic1 = audioContext.createOscillator();
+      const harmonic2 = audioContext.createOscillator();
+
       const gainNode = audioContext.createGain();
+      const harmonic1Gain = audioContext.createGain();
+      const harmonic2Gain = audioContext.createGain();
 
-      oscillator.connect(gainNode);
+      // Connect oscillators to their gain nodes
+      fundamental.connect(gainNode);
+      harmonic1.connect(harmonic1Gain);
+      harmonic2.connect(harmonic2Gain);
+
+      // Connect all gains to destination
       gainNode.connect(audioContext.destination);
+      harmonic1Gain.connect(audioContext.destination);
+      harmonic2Gain.connect(audioContext.destination);
 
-      oscillator.frequency.value = 800;
-      oscillator.type = "sine";
+      // Gong frequencies - fundamental and harmonics
+      fundamental.frequency.value = 180; // Deep fundamental
+      harmonic1.frequency.value = 270;   // Harmonic
+      harmonic2.frequency.value = 360;   // Higher harmonic
 
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      fundamental.type = "sine";
+      harmonic1.type = "sine";
+      harmonic2.type = "sine";
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.3);
+      // Gong envelope - quick attack, long decay
+      const now = audioContext.currentTime;
+      const duration = 1.2;
+
+      // Fundamental - loudest
+      gainNode.gain.setValueAtTime(0.4, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+      // Harmonics - quieter
+      harmonic1Gain.gain.setValueAtTime(0.2, now);
+      harmonic1Gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+      harmonic2Gain.gain.setValueAtTime(0.1, now);
+      harmonic2Gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+      // Start and stop all oscillators
+      fundamental.start(now);
+      harmonic1.start(now);
+      harmonic2.start(now);
+
+      fundamental.stop(now + duration);
+      harmonic1.stop(now + duration);
+      harmonic2.stop(now + duration);
 
       // Trigger ambient glow
       showAmbientGlow();
     } catch (error) {
-      console.log("Second Thought: Could not play sound", error);
+      console.log("Echo: Could not play sound", error);
     }
   }
 
