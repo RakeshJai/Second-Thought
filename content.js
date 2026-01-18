@@ -372,11 +372,11 @@
     hidePopup();
   }
 
-  // Play meditative Chinese gong sound and show ambient glow
+  // Play gentle raindrop sound and show ambient glow
   function playDingSound() {
     try {
-      console.log("Echo: Attempting to play meditative gong sound");
-      // Create a deep, meditative Chinese gong sound using Web Audio API
+      console.log("Echo: Attempting to play raindrop sound");
+      // Create a soft, calming raindrop sound using Web Audio API
       const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
       const audioContext = new AudioContextCtor();
 
@@ -385,82 +385,56 @@
         audioContext.resume();
       }
 
-      // Create multiple oscillators for a rich, meditative gong sound
-      const fundamental = audioContext.createOscillator();
-      const harmonic1 = audioContext.createOscillator();
-      const harmonic2 = audioContext.createOscillator();
-      const harmonic3 = audioContext.createOscillator();
-      const shimmer = audioContext.createOscillator();
+      // Create oscillators for a water drop sound
+      const dropTone = audioContext.createOscillator();
+      const dropHarmonic = audioContext.createOscillator();
 
       const gainNode = audioContext.createGain();
-      const harmonic1Gain = audioContext.createGain();
-      const harmonic2Gain = audioContext.createGain();
-      const harmonic3Gain = audioContext.createGain();
-      const shimmerGain = audioContext.createGain();
+      const harmonicGain = audioContext.createGain();
 
-      // Connect oscillators to their gain nodes
-      fundamental.connect(gainNode);
-      harmonic1.connect(harmonic1Gain);
-      harmonic2.connect(harmonic2Gain);
-      harmonic3.connect(harmonic3Gain);
-      shimmer.connect(shimmerGain);
+      // Add a subtle filter for more natural sound
+      const filter = audioContext.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 2000;
+      filter.Q.value = 1;
 
-      // Connect all gains to destination
-      gainNode.connect(audioContext.destination);
-      harmonic1Gain.connect(audioContext.destination);
-      harmonic2Gain.connect(audioContext.destination);
-      harmonic3Gain.connect(audioContext.destination);
-      shimmerGain.connect(audioContext.destination);
+      // Connect nodes
+      dropTone.connect(gainNode);
+      dropHarmonic.connect(harmonicGain);
+      gainNode.connect(filter);
+      harmonicGain.connect(filter);
+      filter.connect(audioContext.destination);
 
-      // Chinese gong frequencies - very deep fundamental with rich overtones
-      fundamental.frequency.value = 110;  // Very deep fundamental (A2)
-      harmonic1.frequency.value = 165;    // Perfect fifth
-      harmonic2.frequency.value = 220;    // Octave
-      harmonic3.frequency.value = 330;    // Higher harmonic
-      shimmer.frequency.value = 880;      // High shimmer for that metallic quality
+      // Water drop frequencies - high pitch that drops quickly
+      dropTone.frequency.setValueAtTime(1200, audioContext.currentTime);
+      dropTone.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
 
-      fundamental.type = "sine";
-      harmonic1.type = "sine";
-      harmonic2.type = "sine";
-      harmonic3.type = "triangle";  // Slightly different timbre
-      shimmer.type = "sine";
+      dropHarmonic.frequency.setValueAtTime(1800, audioContext.currentTime);
+      dropHarmonic.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
 
-      // Meditative gong envelope - quick attack, very long decay
+      dropTone.type = "sine";
+      dropHarmonic.type = "sine";
+
+      // Gentle envelope - quick attack, soft decay
       const now = audioContext.currentTime;
-      const duration = 2.5;  // Longer, more meditative decay
+      const duration = 0.4;
 
-      // Fundamental - deepest and loudest
-      gainNode.gain.setValueAtTime(0.5, now);
+      // Main drop tone
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
 
-      // First harmonic - strong presence
-      harmonic1Gain.gain.setValueAtTime(0.3, now);
-      harmonic1Gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+      // Harmonic - quieter
+      harmonicGain.gain.setValueAtTime(0, now);
+      harmonicGain.gain.linearRampToValueAtTime(0.15, now + 0.01);
+      harmonicGain.gain.exponentialRampToValueAtTime(0.01, now + duration);
 
-      // Second harmonic - medium
-      harmonic2Gain.gain.setValueAtTime(0.2, now);
-      harmonic2Gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+      // Start and stop
+      dropTone.start(now);
+      dropHarmonic.start(now);
 
-      // Third harmonic - subtle
-      harmonic3Gain.gain.setValueAtTime(0.15, now);
-      harmonic3Gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
-
-      // Shimmer - very quiet but adds metallic quality
-      shimmerGain.gain.setValueAtTime(0.08, now);
-      shimmerGain.gain.exponentialRampToValueAtTime(0.01, now + duration * 0.8);
-
-      // Start and stop all oscillators
-      fundamental.start(now);
-      harmonic1.start(now);
-      harmonic2.start(now);
-      harmonic3.start(now);
-      shimmer.start(now);
-
-      fundamental.stop(now + duration);
-      harmonic1.stop(now + duration);
-      harmonic2.stop(now + duration);
-      harmonic3.stop(now + duration);
-      shimmer.stop(now + duration);
+      dropTone.stop(now + duration);
+      dropHarmonic.stop(now + duration);
 
       // Trigger ambient glow
       showAmbientGlow();
