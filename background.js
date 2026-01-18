@@ -10,6 +10,10 @@ const API_CONFIG = {
   API_KEY_STORAGE: "openrouter_api_key",
   DEFAULT_MODEL: "mistralai/devstral-2512:free", // Free model
   DEFAULT_PROMPT: `Act as a Social Intelligence Expert. Analyze the following chat draft in the context of the conversation history.
+  
+  Note on history format:
+  - Messages labeled "[Me]" are from the user (the writer of the current draft).
+  - Messages labeled "[Them]" are from the conversation partner.
 
 Your task:
 1. Calculate a relationship score (0-100) based on the conversation history, considering:
@@ -86,15 +90,12 @@ async function saveApiKey(apiKey) {
 
 // Get API key from storage
 async function getApiKey() {
-  // Hardcoded API key for hackathon demo
-  const HARDCODED_API_KEY = "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";
-
   try {
     const result = await chrome.storage.local.get([API_CONFIG.API_KEY_STORAGE]);
-    return result[API_CONFIG.API_KEY_STORAGE] || HARDCODED_API_KEY;
+    return result[API_CONFIG.API_KEY_STORAGE];
   } catch (error) {
     console.error("Second Thought: Error getting API key", error);
-    return HARDCODED_API_KEY;
+    return null;
   }
 }
 

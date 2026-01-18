@@ -88,12 +88,59 @@
         const text = el.textContent?.trim() || "";
         if (!text) return null;
 
-        // For WhatsApp, try to get sender info from data attribute
+        // For WhatsApp, try to determine sender
         if (platform === "WHATSAPP") {
+          // Check for specific message direction classes
+          const messageRow = el.closest('.message-in, .message-out');
+          if (messageRow) {
+            const isMe = messageRow.classList.contains('message-out');
+            const senderTag = isMe ? "[Me]" : "[Them]";
+            return `${senderTag}: ${text}`;
+          }
+
+          // Fallback: try to get sender info from data attribute
           const metadata = el.getAttribute("data-pre-plain-text");
           if (metadata) {
             // metadata format is usually "[Time, Date] Name: "
             return `${metadata} ${text}`;
+          }
+        }
+
+        // For Discord, try to determine sender
+        if (platform === "DISCORD") {
+          const messageRow = el.closest('[class*="message-"]');
+          if (messageRow) {
+            // Find the author display name
+            let authorEl = messageRow.querySelector('[class*="username-"]');
+
+            // If no author element (grouped message), look up previous siblings
+            if (!authorEl) {
+              let prev = messageRow.previousElementSibling;
+              let depth = 0;
+              while (prev && !authorEl && depth < 20) { // Safety limit
+                authorEl = prev.querySelector('[class*="username-"]');
+                prev = prev.previousElementSibling;
+                depth++;
+              }
+            }
+
+            if (authorEl) {
+              const authorName = authorEl.textContent.trim();
+
+              // Get current user's name from account panel (bottom left)
+              // This is a common selector but can vary; we check multiple
+              const meEl = document.querySelector('[class*="nameTag-"] [class*="username-"]') ||
+                document.querySelector('[class*="accountProfileCard-"] [class*="username-"]') ||
+                document.querySelector('[class*="panel-"] [class*="text-"]');
+
+              const meName = meEl?.textContent.trim();
+
+              // If we can't find 'Me', we just use the name but this is the goal
+              const isMe = (meName && authorName === meName);
+              const senderTag = isMe ? "[Me]" : "[Them]";
+
+              return `${senderTag} (${authorName}): ${text}`;
+            }
           }
         }
 
@@ -376,8 +423,8 @@
   }
 
   // Position and show popup
-  function showPopup(emoji, label) {
-    console.log("Second Thought: showPopup called with", emoji, label);
+  function showPopup(emoji, label, autoHide = true) {
+    console.log("Second Thought: showPopup called with", emoji, label, "autoHide:", autoHide);
     const popup = createPopup();
     // CSS handles positioning now (fixed top center)
     // We just need to update content and visibility
@@ -410,23 +457,19 @@
     popup.style.pointerEvents = "auto";
     popup.classList.remove("hidden");
 
-    console.log("Second Thought: Popup displayed", {
-      hasHidden: popup.classList.contains("hidden"),
-      display: popup.style.display,
-      opacity: popup.style.opacity
-    });
-
     // Clear any existing timeout
     if (popupHideTimeout) {
       clearTimeout(popupHideTimeout);
       popupHideTimeout = null;
     }
 
-    // Auto-hide after 8 seconds
-    popupHideTimeout = setTimeout(() => {
-      console.log("Second Thought: Auto-hiding popup after 8s");
-      hidePopup();
-    }, 8000);
+    // Auto-hide only if requested (default for results)
+    if (autoHide) {
+      popupHideTimeout = setTimeout(() => {
+        console.log("Second Thought: Auto-hiding popup after 8s");
+        hidePopup();
+      }, 8000);
+    }
   }
 
   // Hide popup
@@ -462,8 +505,8 @@
 
     console.log("Second Thought: Sending draft for analysis", { draft: draft.substring(0, 50), contextLength: context.length });
 
-    // Show loading popup immediately
-    showPopup("⏳", "Analyzing...");
+    // Show loading popup immediately - DON'T auto-hide while waiting
+    showPopup("⏳", "Analyzing...", false);
 
     // Set a timeout to hide popup if no response
     const timeoutId = setTimeout(() => {
