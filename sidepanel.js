@@ -1,20 +1,22 @@
 // sidepanel.js - Modern UI Controller
-// Handles user interaction and displays settings
 
 console.log("Second Thought Side Panel Loaded");
 
-// DOM Elements
-const ELEMENTS = {
-  apiKeyInput: document.getElementById("apiKey"),
-  saveApiKeyBtn: document.getElementById("saveApiKey"),
-  apiKeyStatus: document.getElementById("apiKeyStatus"),
-  errorSection: document.getElementById("errorSection"),
-  errorMessage: document.getElementById("errorMessage")
-};
+// DOM Elements - initialized in init
+let ELEMENTS = {};
 
 // Initialize the side panel
 function init() {
   console.log("Second Thought: Initializing side panel");
+
+  ELEMENTS = {
+    apiKeyInput: document.getElementById("apiKey"),
+    saveApiKeyBtn: document.getElementById("saveApiKey"),
+    apiKeyStatus: document.getElementById("apiKeyStatus"),
+    errorSection: document.getElementById("errorSection"),
+    errorMessage: document.getElementById("errorMessage"),
+    modelSelect: document.getElementById("modelSelect")
+  };
 
   setupEventListeners();
   loadSettings();
@@ -22,18 +24,18 @@ function init() {
 
 // Set up event listeners
 function setupEventListeners() {
+  if (!ELEMENTS.saveApiKeyBtn) return;
+
   // Save Settings button
   ELEMENTS.saveApiKeyBtn.addEventListener("click", saveSettings);
 
-  // API Key input - allow showing/hiding
+  // API Key input - show as text when focused
   ELEMENTS.apiKeyInput.addEventListener("focus", function () {
     this.type = "text";
   });
 
   ELEMENTS.apiKeyInput.addEventListener("blur", function () {
-    if (this.value === "") {
-      this.type = "password";
-    }
+    this.type = "password";
   });
 
   // Enter key to save
@@ -46,6 +48,7 @@ function setupEventListeners() {
 
 // Show status message
 function showStatus(message, type = "info") {
+  if (!ELEMENTS.apiKeyStatus) return;
   ELEMENTS.apiKeyStatus.className = `status-badge ${type}`;
   ELEMENTS.apiKeyStatus.textContent = message;
   ELEMENTS.apiKeyStatus.classList.remove("hidden");
@@ -54,10 +57,11 @@ function showStatus(message, type = "info") {
 // Load saved settings
 async function loadSettings() {
   try {
-    const result = await chrome.storage.local.get(["gemini_api_key", "selected_model"]);
+    // UPDATED: Using 'openrouter_api_key' to match background.js
+    const result = await chrome.storage.local.get(["openrouter_api_key", "selected_model"]);
 
     // API Key State
-    if (result.gemini_api_key) {
+    if (result.openrouter_api_key) {
       console.log("Second Thought: Found existing API key");
       ELEMENTS.apiKeyInput.placeholder = "Custom Key Active";
       showStatus("Neural config synchronized.", "success");
@@ -66,11 +70,8 @@ async function loadSettings() {
     }
 
     // Model Selection State
-    if (result.selected_model) {
-      const modelSelect = document.getElementById("modelSelect");
-      if (modelSelect) {
-        modelSelect.value = result.selected_model;
-      }
+    if (result.selected_model && ELEMENTS.modelSelect) {
+      ELEMENTS.modelSelect.value = result.selected_model;
     }
   } catch (error) {
     console.error("Second Thought: Error loading settings", error);
@@ -80,24 +81,24 @@ async function loadSettings() {
 // Save all settings
 async function saveSettings() {
   const apiKey = ELEMENTS.apiKeyInput.value.trim();
-  const modelSelect = document.getElementById("modelSelect");
-  const selectedModel = modelSelect ? modelSelect.value : "mistralai/devstral-2512:free";
+  const selectedModel = ELEMENTS.modelSelect ? ELEMENTS.modelSelect.value : "mistralai/devstral-2512:free";
 
   ELEMENTS.saveApiKeyBtn.disabled = true;
+  const originalHtml = ELEMENTS.saveApiKeyBtn.innerHTML;
   ELEMENTS.saveApiKeyBtn.innerHTML = '<span>⏳</span><span>Synchronizing...</span>';
 
   try {
-    // 1. Save API Key if entered
+    // 1. Save API Key via background script if entered
     if (apiKey) {
       await chrome.runtime.sendMessage({
         action: "API_KEY_SAVED",
         payload: { apiKey }
       });
       ELEMENTS.apiKeyInput.value = "";
-      ELEMENTS.apiKeyInput.placeholder = "Custom API key is set";
+      ELEMENTS.apiKeyInput.placeholder = "Custom Key Active";
     }
 
-    // 2. Save Model Selection
+    // 2. Save Model Selection directly
     await chrome.storage.local.set({ "selected_model": selectedModel });
 
     showStatus("✅ Neural network configured!", "success");
@@ -114,14 +115,16 @@ async function saveSettings() {
 
 // Show error message
 function showError(message) {
-  console.error("Second Thought: Error -", message);
+  if (!ELEMENTS.errorSection) return;
   ELEMENTS.errorSection.classList.remove("hidden");
   ELEMENTS.errorMessage.textContent = message;
 }
 
 // Hide error message
 function hideError() {
-  ELEMENTS.errorSection.classList.add("hidden");
+  if (ELEMENTS.errorSection) {
+    ELEMENTS.errorSection.classList.add("hidden");
+  }
 }
 
 // Initialize the side panel when DOM is loaded
